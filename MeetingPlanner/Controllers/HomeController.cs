@@ -15,14 +15,14 @@ namespace MeetingPlanner.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "Sacrament Meeting Planner";
 
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Email";
 
             return View();
         }
