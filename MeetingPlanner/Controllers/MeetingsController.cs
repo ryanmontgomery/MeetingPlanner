@@ -48,7 +48,7 @@ namespace MeetingPlanner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,MeetingDate,BishopricID")] Meeting meeting)
+        public ActionResult Create([Bind(Include = "ID,Description,MeetingDate,BishopricID")] Meeting meeting)
         {
             if (ModelState.IsValid)
             {
@@ -82,7 +82,7 @@ namespace MeetingPlanner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,MeetingDate,BishopricID")] Meeting meeting)
+        public ActionResult Edit([Bind(Include = "ID,Description,MeetingDate,BishopricID")] Meeting meeting)
         {
             if (ModelState.IsValid)
             {
