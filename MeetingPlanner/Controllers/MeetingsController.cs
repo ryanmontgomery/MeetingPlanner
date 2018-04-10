@@ -28,7 +28,7 @@ namespace MeetingPlanner.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Meeting meeting = db.Meetings.Find(id);
+            Meeting meeting = db.Meetings.Include(m => m.Bishopric).Where(bob => bob.ID == id).FirstOrDefault();
             if (meeting == null)
             {
                 return HttpNotFound();
@@ -101,7 +101,7 @@ namespace MeetingPlanner.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Meeting meeting = db.Meetings.Find(id);
+            Meeting meeting = db.Meetings.Include(m => m.Bishopric).Where(bob => bob.ID == id).FirstOrDefault();
             if (meeting == null)
             {
                 return HttpNotFound();
@@ -119,7 +119,7 @@ namespace MeetingPlanner.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-
+                
         protected override void Dispose(bool disposing)
         {
             if (disposing)

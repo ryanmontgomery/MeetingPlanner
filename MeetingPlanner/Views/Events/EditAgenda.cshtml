@@ -1,0 +1,83 @@
+﻿@model IEnumerable<MeetingPlanner.Models.Event>
+
+@{
+    /**/
+
+    ViewBag.Title = "Edit Agenda";
+}
+
+<h2>Meeting Details</h2>
+
+<dl class="dl-horizontal">
+    <dt>
+        @Html.DisplayNameFor(model => model.Meeting.Description)
+    </dt>
+    <dd>
+        @Html.DisplayFor(model => model.First().Meeting.Description)
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.Meeting.MeetingDate)
+    </dt>
+    <dd>
+        @Html.DisplayFor(model => model.First().Meeting.MeetingDate)
+    </dd>
+
+    <dt>
+        @Html.DisplayNameFor(model => model.Meeting.Bishopric.Name)
+    </dt>
+    <dd>
+        @Html.DisplayFor(model => model.First().Meeting.Bishopric.Name)
+    </dd>
+</dl>
+
+<h2>Edit Agenda</h2>
+
+<p>
+</p>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Order)
+        </th>
+        <th></th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Order)
+        </td>
+
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.ID })
+        </td>
+
+        <td>
+            @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+        </td>
+
+        <td>
+            <button onclick="location.href='@Url.Action("OrderUp", "Events", new { id = item.ID })';return false;">&#8679;</button>
+            <br />
+            <button onclick="location.href='@Url.Action("OrderDown", "Events", new { id = item.ID })';return false;">&#8681;</button>
+        </td>
+    </tr>
+    }
+
+</table>

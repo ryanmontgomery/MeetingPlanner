@@ -17,7 +17,6 @@ namespace MeetingPlanner.Models
         public DateTime MeetingDate { get; set; }
 
         public int BishopricID { get; set; }
-        [Display(Name = "Conducting")]
         public Bishopric Bishopric { get; set; }
     }
 }

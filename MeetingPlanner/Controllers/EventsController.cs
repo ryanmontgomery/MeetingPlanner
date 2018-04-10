@@ -46,7 +46,7 @@ namespace MeetingPlanner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Title,Description,Order,MeetingID")] Event @event)
+        public ActionResult Create([Bind(Include = "ID,Title,Description")] Event @event)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +78,7 @@ namespace MeetingPlanner.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Title,Description,Order,MeetingID")] Event @event)
+        public ActionResult Edit([Bind(Include = "ID,Title,Description,Order")] Event @event)
         {
             if (ModelState.IsValid)
             {
@@ -113,6 +113,54 @@ namespace MeetingPlanner.Controllers
             db.Events.Remove(@event);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        // Get: Events/EditAgenda/5
+        public ActionResult EditAgenda(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            // IEnumerable<MeetingPlanner.Models.Event> temp = db.Events.Include(m => m.Meeting).ToList().Where(e => e.Meeting.ID == id);
+            return View(db.Events.Include(m => m.Meeting).ToList().Where(e => e.Meeting.ID == id).OrderBy(e => e.Order));
+        }
+
+        // Post: Events/OrderUp/5
+        public ActionResult OrderUp(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var agendaItem = db.Events.Include(m => m.Meeting).Single(e => e.ID == id);
+            
+            if (agendaItem.Order > 1)
+            {
+                var agendaItem2 = db.Events.Include(m => m.Meeting).Single(e => e.Order == agendaItem.Order - 1 && e.Meeting.ID == agendaItem.Meeting.ID);
+                agendaItem.Order = agendaItem.Order - 1;
+                agendaItem2.Order = agendaItem2.Order + 1;
+                db.SaveChanges();
+            }
+            return View("EditAgenda", db.Events.Include(m => m.Meeting).ToList().Where(e => e.Meeting.ID == agendaItem.Meeting.ID).OrderBy(e => e.Order));
+        }
+
+        // Post: Events/OrderDown/5
+        public ActionResult OrderDown(int? id)
+        {
+            var agendaItem = db.Events.Include(m => m.Meeting).Single(e => e.ID == id);
+            var agendaSize = db.Events.Include(m => m.Meeting).Where(e => e.Meeting.ID == agendaItem.Meeting.ID).Count();
+
+            if(agendaItem.Order < agendaSize)
+            {
+                var agendaItem2 = db.Events.Include(m => m.Meeting).Single(e => e.Order == agendaItem.Order + 1 && e.Meeting.ID == agendaItem.Meeting.ID);
+                agendaItem.Order = agendaItem.Order + 1;
+                agendaItem2.Order = agendaItem2.Order - 1;
+                db.SaveChanges();
+            }
+
+            return View("EditAgenda", db.Events.Include(m => m.Meeting).ToList().Where(e => e.Meeting.ID == agendaItem.Meeting.ID).OrderBy(e => e.Order));
         }
 
         protected override void Dispose(bool disposing)

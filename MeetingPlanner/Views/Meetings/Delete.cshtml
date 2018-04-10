@@ -12,6 +12,14 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
+            @Html.DisplayNameFor(model => model.Bishopric.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Bishopric.Name)
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.Description)
         </dt>
 
@@ -27,13 +35,6 @@
             @Html.DisplayFor(model => model.MeetingDate)
         </dd>
 
-        <dt>
-            Conducting
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Bishopric.Name)
-        </dd>
     </dl>
 
     @using (Html.BeginForm()) {
