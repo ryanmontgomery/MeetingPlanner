@@ -127,6 +127,20 @@ namespace MeetingPlanner.Controllers
         {
             Event @event = db.Events.Find(id);
             var meetingId = db.Events.Include(m => m.Meeting).Single(e => e.ID == @event.ID).Meeting.ID;
+            var eventReorder = db.Events.Include(m => m.Meeting).ToList().Where(e => e.Meeting.ID == meetingId);
+
+            if (eventReorder.Count() > @event.Order)
+            {
+                foreach(var agendaItem in eventReorder)
+                {
+                    if(agendaItem.Order > @event.Order)
+                    {
+                        agendaItem.Order -= 1;
+                    }
+                    
+                }
+            }
+
             db.Events.Remove(@event);
             db.SaveChanges();
             return RedirectToAction("EditAgenda", new { id = meetingId });
