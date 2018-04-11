@@ -1,4 +1,4 @@
-﻿@model MeetingPlanner.Models.Meeting
+﻿@model MeetingPlanner.Models.ViewModels.MeetingDetailsData
 
 @{
     ViewBag.Title = "Details";
@@ -11,32 +11,45 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Bishopric.Name)
+            @Html.DisplayNameFor(model => model.Meeting.Bishopric.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Bishopric.Name)
+            @Html.DisplayFor(model => model.Meeting.Bishopric.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.Meeting.Description)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.Meeting.Description)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.MeetingDate)
+            @Html.DisplayNameFor(model => model.Meeting.MeetingDate)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.MeetingDate)
+            @Html.DisplayFor(model => model.Meeting.MeetingDate)
         </dd>
+    </dl>
 
+    <h4>Agenda</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @foreach (var item in Model.Events)
+        {
+            <dt>
+                @Html.DisplayFor(modelItem => item.Title)
+            </dt>
+            <dd>
+                @Html.DisplayFor(modelItem => item.Description)
+            </dd>
+        }
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Meeting.ID }) |
     @Html.ActionLink("Back to List", "Index")
 </p>

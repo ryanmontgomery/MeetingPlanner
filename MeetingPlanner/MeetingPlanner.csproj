@@ -164,6 +164,7 @@
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Meeting.cs" />
     <Compile Include="Models\MeetingPlannerContext.cs" />
+    <Compile Include="Models\ViewModels\MeetingDetailsData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

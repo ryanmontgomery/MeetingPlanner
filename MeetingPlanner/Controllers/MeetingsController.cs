@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using MeetingPlanner.Models;
+using MeetingPlanner.Models.ViewModels;
 
 namespace MeetingPlanner.Controllers
 {
@@ -25,12 +26,14 @@ namespace MeetingPlanner.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Meeting meeting = db.Meetings.Include(m => m.Bishopric).Where(bob => bob.ID == id).FirstOrDefault();
-            if (meeting == null)
+            var viewModel = new MeetingDetailsData();
+            viewModel.Meeting = db.Meetings.Include(m => m.Bishopric).Where(bob => bob.ID == id).FirstOrDefault();
+            if (viewModel.Meeting == null)
             {
                 return HttpNotFound();
             }
-            return View(meeting);
+            viewModel.Events = db.Events.Include(m => m.Meeting).ToList().Where(e => e.Meeting.ID == id).OrderBy(e => e.Order);
+            return View(viewModel);
         }
 
         // GET: Meetings/Create
