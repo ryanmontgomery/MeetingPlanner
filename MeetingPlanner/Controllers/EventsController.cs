@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using MeetingPlanner.Models;
+using MeetingPlanner.Models.ViewModels;
 
 namespace MeetingPlanner.Controllers
 {
@@ -32,24 +33,41 @@ namespace MeetingPlanner.Controllers
             return View(@event);
         }
 
-        // GET: Events/Create
-        public ActionResult Create()
+        // GET: Events/Create/5
+        public ActionResult Create(int? id)
         {
-            return View();
+            AgendaItemCreate item = new AgendaItemCreate();
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            item.MeetingID = (int)id;
+            return View(item);
         }
 
-        // POST: Events/Create
+        // POST: Events/Create/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Title,Description")] Event @event)
+        public ActionResult Create([Bind(Include = "ID,Title,Description,MeetingID,Order")] Event @event, AgendaItemCreate item)
         {
+            if (db.Meetings.Find(item.MeetingID) == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             if (ModelState.IsValid)
             {
+                var orderCount = db.Events.Include(m => m.Meeting).ToList().Where(e => e.Meeting.ID == item.MeetingID).Count();
+
+                //@event.Meeting.ID = item.MeetingID; //This is bad why oh why would you do this?
+                @event.Meeting = db.Meetings.Find(item.MeetingID);
+                @event.Order = orderCount + 1;
+                                
                 db.Events.Add(@event);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("EditAgenda", new { id = item.MeetingID });
             }
 
             return View(@event);
@@ -79,9 +97,10 @@ namespace MeetingPlanner.Controllers
         {
             if (ModelState.IsValid)
             {
+                //var agendaItem = db.Events.Include(m => m.Meeting).Single(e => e.ID == @event.ID);
                 db.Entry(@event).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("EditAgenda", new { db.Events.Include(m => m.Meeting).Single(e => e.ID == @event.ID).Meeting.ID });
             }
             return View(@event);
         }
@@ -107,9 +126,10 @@ namespace MeetingPlanner.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Event @event = db.Events.Find(id);
+            var meetingId = db.Events.Include(m => m.Meeting).Single(e => e.ID == @event.ID).Meeting.ID;
             db.Events.Remove(@event);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("EditAgenda", new { id = meetingId });
         }
 
         // Get: Events/EditAgenda/5
@@ -119,8 +139,14 @@ namespace MeetingPlanner.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            // IEnumerable<MeetingPlanner.Models.Event> temp = db.Events.Include(m => m.Meeting).ToList().Where(e => e.Meeting.ID == id);
-            return View(db.Events.Include(m => m.Meeting).ToList().Where(e => e.Meeting.ID == id).OrderBy(e => e.Order));
+            var viewModel = new MeetingDetailsData();
+            viewModel.Meeting = db.Meetings.Include(m => m.Bishopric).Where(bob => bob.ID == id).FirstOrDefault();
+            if (viewModel.Meeting == null)
+            {
+                return HttpNotFound();
+            }
+            viewModel.Events = db.Events.Include(m => m.Meeting).ToList().Where(e => e.Meeting.ID == id).OrderBy(e => e.Order);
+            return View(viewModel);
         }
 
         // Post: Events/OrderUp/5
@@ -140,7 +166,8 @@ namespace MeetingPlanner.Controllers
                 agendaItem2.Order = agendaItem2.Order + 1;
                 db.SaveChanges();
             }
-            return View("EditAgenda", db.Events.Include(m => m.Meeting).ToList().Where(e => e.Meeting.ID == agendaItem.Meeting.ID).OrderBy(e => e.Order));
+            return RedirectToAction("EditAgenda", new { agendaItem.Meeting.ID });
+            //return View("EditAgenda", db.Events.Include(m => m.Meeting).ToList().Where(e => e.Meeting.ID == agendaItem.Meeting.ID).OrderBy(e => e.Order));
         }
 
         // Post: Events/OrderDown/5
@@ -156,8 +183,8 @@ namespace MeetingPlanner.Controllers
                 agendaItem2.Order = agendaItem2.Order - 1;
                 db.SaveChanges();
             }
-
-            return View("EditAgenda", db.Events.Include(m => m.Meeting).ToList().Where(e => e.Meeting.ID == agendaItem.Meeting.ID).OrderBy(e => e.Order));
+            return RedirectToAction("EditAgenda", new { agendaItem.Meeting.ID });
+            //return View("EditAgenda", db.Events.Include(m => m.Meeting).ToList().Where(e => e.Meeting.ID == agendaItem.Meeting.ID).OrderBy(e => e.Order));
         }
 
         protected override void Dispose(bool disposing)

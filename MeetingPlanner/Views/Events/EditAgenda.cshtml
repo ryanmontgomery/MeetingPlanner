@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MeetingPlanner.Models.Event>
+﻿@model MeetingPlanner.Models.ViewModels.MeetingDetailsData
 
 @{
     /**/
@@ -13,72 +13,72 @@
         @Html.DisplayNameFor(model => model.Meeting.Description)
     </dt>
     <dd>
-        @Html.DisplayFor(model => model.First().Meeting.Description)
+        @Html.DisplayFor(model => model.Meeting.Description)
     </dd>
 
     <dt>
         @Html.DisplayNameFor(model => model.Meeting.MeetingDate)
     </dt>
     <dd>
-        @Html.DisplayFor(model => model.First().Meeting.MeetingDate)
+        @Html.DisplayFor(model => model.Meeting.MeetingDate)
     </dd>
 
     <dt>
         @Html.DisplayNameFor(model => model.Meeting.Bishopric.Name)
     </dt>
     <dd>
-        @Html.DisplayFor(model => model.First().Meeting.Bishopric.Name)
+        @Html.DisplayFor(model => model.Meeting.Bishopric.Name)
     </dd>
 </dl>
 
 <h2>Edit Agenda</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create", new { id = Model.Meeting.ID })
 </p>
 
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.Events.First().Title)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.Events.First().Description)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Order)
+            @Html.DisplayNameFor(model => model.Events.First().Order)
         </th>
         <th></th>
         <th></th>
     </tr>
 
-    @foreach (var item in Model)
+    @foreach (var item in Model.Events)
     {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Order)
-        </td>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Order)
+            </td>
 
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.ID })
-        </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ID })
+            </td>
 
-        <td>
-            @Html.ActionLink("Delete", "Delete", new { id = item.ID })
-        </td>
+            <td>
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+            </td>
 
-        <td>
-            <button onclick="location.href='@Url.Action("OrderUp", "Events", new { id = item.ID })';return false;">&#8679;</button>
-            <br />
-            <button onclick="location.href='@Url.Action("OrderDown", "Events", new { id = item.ID })';return false;">&#8681;</button>
-        </td>
-    </tr>
+            <td>
+                <button onclick="location.href='@Url.Action("OrderUp", "Events", new { id = item.ID })';return false;">&#8679;</button>
+                <br />
+                <button onclick="location.href='@Url.Action("OrderDown", "Events", new { id = item.ID })';return false;">&#8681;</button>
+            </td>
+        </tr>
     }
 
 </table>
