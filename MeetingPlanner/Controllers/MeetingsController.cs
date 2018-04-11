@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -13,9 +14,18 @@ namespace MeetingPlanner.Controllers
         private MeetingPlannerContext db = new MeetingPlannerContext();
 
         // GET: Meetings
-        public ActionResult Index()
+        public ActionResult Index(string searchString)
         {
             var meetings = db.Meetings.Include(m => m.Bishopric);
+
+            ViewData["CurrentFilter"] = searchString;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                meetings = meetings.Where(m => m.Bishopric.Name.Contains(searchString));
+            }
+
+            meetings = meetings.OrderByDescending(m => m.MeetingDate);
+
             return View(meetings.ToList());
         }
 
