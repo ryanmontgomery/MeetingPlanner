@@ -15,7 +15,7 @@ namespace MeetingPlanner.Controllers
         // GET: Events
         public ActionResult Index()
         {
-            return View(db.Events.ToList());
+            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
         }
 
         // GET: Events/Details/5
