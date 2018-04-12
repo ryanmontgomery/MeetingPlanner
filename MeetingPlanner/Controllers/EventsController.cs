@@ -80,7 +80,7 @@ namespace MeetingPlanner.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Event @event = db.Events.Find(id);
+            Event @event = db.Events.Include(m => m.Meeting).Single(e => e.ID == id);
             if (@event == null)
             {
                 return HttpNotFound();
@@ -112,7 +112,7 @@ namespace MeetingPlanner.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Event @event = db.Events.Find(id);
+            Event @event = db.Events.Include(m => m.Meeting).Single(e => e.ID == id);
             if (@event == null)
             {
                 return HttpNotFound();
